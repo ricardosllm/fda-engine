@@ -26,7 +26,7 @@
     (<! (async/timeout msecs))
     (js/Error. (str "Failing after " msecs " milliseconds"))))
 
-(def ^:export work-magic
+(def ^:export core
   (async-lambda-fn
    (fn [{:keys [magic-word] :as input} context]
      (if (not= magic-word (config :magic-word))

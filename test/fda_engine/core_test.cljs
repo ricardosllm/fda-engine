@@ -1,5 +1,5 @@
 (ns fda-engine.core-test
-  (:require [fda-engine.core :refer [work-magic config]]
+  (:require [fda-engine.core :refer [core config]]
             [cljs.test :refer-macros [deftest is]]
             [cljs-lambda.util :refer [mock-context]]
             [cljs.core.async :as async])
@@ -9,7 +9,7 @@
   (cljs.test/async
    done
    (go
-     (let [[tag result] (<! (work-magic
+     (let [[tag result] (<! (core
                              {:magic-word "not the magic word"}
                              (mock-context)))]
        (is (= tag :fail))
@@ -19,7 +19,7 @@
   (cljs.test/async
    done
    (go
-     (let [[tag result] (<! (work-magic
+     (let [[tag result] (<! (core
                              {:magic-word (:magic-word config)
                               :spell :delay
                               :msecs 2}
@@ -32,7 +32,7 @@
   (cljs.test/async
    done
    (go
-     (let [[tag result] (<! (work-magic
+     (let [[tag result] (<! (core
                              {:magic-word (:magic-word config)
                               :spell :delayed-failure
                               :msecs 3}

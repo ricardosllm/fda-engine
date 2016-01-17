@@ -1,6 +1,6 @@
 (defproject fda-engine "0.1.0-SNAPSHOT"
-  :description "FIXME"
-  :url "http://please.FIXME"
+  :description "Face Detection App - Engine using AWS Lambda"
+  :url "https://github.com/ricardosllm/fda-engine"
 
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.228"]
@@ -19,8 +19,8 @@
                 :resource-dirs ["static"]
                 ;:aws-profile "devfda"
                 :functions
-                               [{:name   "work-magic"
-                                 :invoke fda-engine.core/work-magic}]}
+                               [{:name   "fda-engine"
+                                 :invoke fda-engine.core/core}]}
 
   :cljsbuild {:builds [{:id           "fda-engine"
                         :source-paths ["src"]
@@ -34,4 +34,5 @@
                                        :output-dir    "target/fda-engine-test"
                                        :target        :nodejs
                                        :optimizations :none
+                                       :pretty-print  true
                                        :main          fda-engine.test-runner}}]})
