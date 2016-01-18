@@ -13,25 +13,17 @@
       (.readFileSync "static/config.edn" "UTF-8")
       read-string))
 
-(defmulti cast-async-spell (comp keyword :spell))
-
-(defmethod cast-async-spell :delay [{:keys [msecs] :or {msecs 1000}}]
-  (go
-    (<! (async/timeout msecs))
-    {:waited msecs}))
-
-(defmethod cast-async-spell :delayed-failure
-  [{:keys [msecs] :or {msecs 1000}}]
-  (go
-    (<! (async/timeout msecs))
-    (js/Error. (str "Failing after " msecs " milliseconds"))))
+(defn download [input]
+  (print input))
 
 (def ^:export core
   (async-lambda-fn
    (fn [{:keys [magic-word] :as input} context]
+     (print (config :src-bucket-url))
+     (print context)
      (if (not= magic-word (config :magic-word))
        ;; We can fail/succeed wherever w/ fail!/succeed! - we can also
        ;; leave an Error instance on the channel we return -
        ;; see :delayed-failure above.
        (lambda/fail! context "Your magic word is garbage")
-       (cast-async-spell input)))))
+       (download input)))))

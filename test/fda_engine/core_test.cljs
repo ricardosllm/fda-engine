@@ -5,38 +5,5 @@
             [cljs.core.async :as async])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
-(deftest wrong-word
-  (cljs.test/async
-   done
-   (go
-     (let [[tag result] (<! (core
-                             {:magic-word "not the magic word"}
-                             (mock-context)))]
-       (is (= tag :fail))
-       (done)))))
-
-(deftest delay-spell
-  (cljs.test/async
-   done
-   (go
-     (let [[tag result] (<! (core
-                             {:magic-word (:magic-word config)
-                              :spell :delay
-                              :msecs 2}
-                             (mock-context)))]
-       (is (= tag :succeed))
-       (is (= result {:waited 2}))
-       (done)))))
-
-(deftest delayed-failure-spell
-  (cljs.test/async
-   done
-   (go
-     (let [[tag result] (<! (core
-                             {:magic-word (:magic-word config)
-                              :spell :delayed-failure
-                              :msecs 3}
-                             (mock-context)))]
-       (is (= tag :fail))
-       (is (instance? js/Error result))
-       (done)))))
+(deftest download
+  (is (= (config :src-bucket-url) "https://s3-ap-northeast-1.amazonaws.com/ricardosllm-fda/")))
