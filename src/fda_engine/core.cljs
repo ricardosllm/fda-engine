@@ -2,8 +2,11 @@
   (:require [cljs-lambda.util :as lambda :refer [async-lambda-fn]]
             [cljs.reader :refer [read-string]]
             [cljs.nodejs :as nodejs]
-            [cljs.core.async :as async])
+            [cljs.core.async :as async]
+            [s3-cljs.core])
   (:require-macros [cljs.core.async.macros :refer [go]]))
+
+(nodejs/enable-util-print!)
 
 ;; For optimizations :advanced
 (set! *main-cli-fn* identity)
@@ -13,8 +16,13 @@
       (.readFileSync "static/config.edn" "UTF-8")
       read-string))
 
+(def aws (nodejs/require "aws-sdk"))
+;(def s3 (new aws))
+
 (defn download [bucket-name key]
-  (print (str "bucket:  s3://" bucket-name "/" key)))
+  (print (str "key:  " key))
+  (print (str "bucket-name:  " bucket-name))
+  (print (s3-cljs.core/get-object bucket-name (clojure.string/replace key #"/\+/g" " "))))
 
 (def ^:export core
   (async-lambda-fn
