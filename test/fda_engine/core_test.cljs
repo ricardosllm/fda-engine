@@ -1,11 +1,22 @@
 (ns fda-engine.core-test
-  (:require [fda-engine.core :refer [core config]]
+  (:require [fda-engine.core :refer [core download config]]
             [cljs.test :refer-macros [deftest is]]
             [cljs-lambda.util :refer [mock-context]]
             [cljs.core.async :as async])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
-(nodejs/enable-util-print!)
+;(deftest foo
+;  (is (= 1 1)))
+;
 
 (deftest download
-  (is (= (config :src-bucket-url) "https://s3-ap-northeast-1.amazonaws.com/ricardosllm-fda/")))
+  (cljs.test/async
+    done
+    (go
+      (let [[tag result] (<! (download
+                               {:bucke-name "bucke-name"
+                                :key        "key"}
+                               (mock-context)))]
+        (is (= tag :fail))
+        (is (instance? js/Error result))
+        (done)))))
