@@ -28,10 +28,10 @@
 
 (def ^:export work-magic
   (async-lambda-fn
-   (fn [{:keys [magic-word] :as input} context]
-     (if (not= magic-word (config :magic-word))
-       ;; We can fail/succeed wherever w/ fail!/succeed! - we can also
-       ;; leave an Error instance on the channel we return -
-       ;; see :delayed-failure above.
-       (lambda/fail! context "Your magic word is garbage")
-       (cast-async-spell input)))))
+    (fn [{:keys [magic-word] :as input} context]
+      (if (not= magic-word (config :magic-word))
+        ;; We can fail/succeed wherever w/ fail!/succeed! - we can also
+        ;; leave an Error instance on the channel we return -
+        ;; see :delayed-failure above.
+        (lambda/fail! context "Your magic word is garbage")
+        (cast-async-spell input)))))
