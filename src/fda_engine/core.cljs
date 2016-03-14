@@ -25,6 +25,12 @@
   (go
     (<! (async/timeout msecs))
     (js/Error. (str "Failing after " msecs " milliseconds"))))
+;
+;(
+;  (->> (download)
+;       (save)
+;       (detect)
+;       (upload)))
 
 (def ^:export work-magic
   (async-lambda-fn
