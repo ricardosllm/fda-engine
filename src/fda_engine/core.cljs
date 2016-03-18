@@ -32,12 +32,12 @@
 ;       (detect)
 ;       (upload)))
 
-(def ^:export work-magic
+(def ^:export detect-face
   (async-lambda-fn
-    (fn [{:keys [magic-word] :as input} context]
-      (if (not= magic-word (config :magic-word))
+    (fn [{:keys [original-bucket] :as input} context]
+      (if (not= original-bucket (config :original-bucket))
         ;; We can fail/succeed wherever w/ fail!/succeed! - we can also
         ;; leave an Error instance on the channel we return -
         ;; see :delayed-failure above.
-        (lambda/fail! context "Your magic word is garbage")
+        (lambda/fail! context "Download failed")
         (cast-async-spell input)))))

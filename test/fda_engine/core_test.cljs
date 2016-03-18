@@ -1,5 +1,5 @@
 (ns fda-engine.core-test
-  (:require [fda-engine.core :refer [work-magic config]]
+  (:require [fda-engine.core :refer [detect-face config]]
             [cljs.test :refer-macros [deftest is]]
             [cljs-lambda.util :refer [mock-context]]
             [cljs.core.async :as async])
@@ -9,8 +9,8 @@
   (cljs.test/async
     done
     (go
-      (let [[tag result] (<! (work-magic
-                               {:magic-word "not the magic word"}
+      (let [[tag result] (<! (detect-face
+                               {:original-bucket "not the magic word"}
                                (mock-context)))]
         (is (= tag :fail))
         (done)))))
@@ -19,8 +19,8 @@
   (cljs.test/async
     done
     (go
-      (let [[tag result] (<! (work-magic
-                               {:magic-word (:magic-word config)
+      (let [[tag result] (<! (detect-face
+                               {:original-bucket (:original-bucket config)
                                 :spell      :delay
                                 :msecs      2}
                                (mock-context)))]
@@ -32,8 +32,8 @@
   (cljs.test/async
     done
     (go
-      (let [[tag result] (<! (work-magic
-                               {:magic-word (:magic-word config)
+      (let [[tag result] (<! (detect-face
+                               {:original-bucket (:original-bucket config)
                                 :spell      :delayed-failure
                                 :msecs      3}
                                (mock-context)))]
