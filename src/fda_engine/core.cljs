@@ -24,12 +24,6 @@
     (<! (async/timeout msecs))
     {:waited msecs}))
 
-(defmethod cast-async-spell :delay-promise
-  [{:keys [msecs] :or {msecs 1000}} ctx]
-  (p/promise
-   (fn [resolve]
-     (p/schedule msecs #(resolve {:waited msecs})))))
-
 (defmethod cast-async-spell :delay-fail
   [{:keys [msecs] :or {msecs 1000}} ctx]
   (go
@@ -44,7 +38,8 @@
 ;       (detect)
 ;       (upload)))
 
-(deflambda detect-face [{:keys [:original-bucket] :as input} context]
-  (when (not= (:original-bucket input) (config :original-bucket))
-    (throw (js/Error. "Your magic word is garbage")))
-  (cast-async-spell input context))
+(deflambda fda-engine [{:keys [:original-bucket] :as input} context]
+           (when (not= (:original-bucket input) (config :original-bucket))
+             (throw (js/Error. "Your magic word is garbage")))
+           (->
+             (cast-async-spell input context)))
