@@ -33,12 +33,6 @@
     ;; promised - see :delayed-failure above.
     (ctx/fail! ctx (js/Error. (str "Failing after " msecs " milliseconds")))))
 
-
-;  (->> (download)
-;       (save)
-;       (detect)
-;       (upload)))
-
 (deflambda fda-engine [{:keys [:original-bucket] :as input} context]
            (when (not= (:original-bucket input) (config :original-bucket))
              (throw (js/Error. "Your magic word is garbage")))
