@@ -40,6 +40,7 @@
              (cast-async-spell input context)))
 
 
+
 ; entry function puts on download channel
 ; download function gets from download channel and download the image from S3
 ; download function puts it on the save channel
@@ -50,6 +51,8 @@
 ; upload function gets the job from the upload channel and uploads the photo to S3
 ; upload function puts a done msg on the finish channel
 ; finish function gets the done msg from the finish channel and calls context.done
+
+
 
 ; Channels:
   ; download
