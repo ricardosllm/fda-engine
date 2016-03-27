@@ -32,3 +32,17 @@
         (is (= tag :succeed))
         (is (= response {"waited" 2})))
       (done))))
+
+(def download-req
+  {:original-bucket (:original-bucket config)
+   :in-channel      :download-channel
+   :out-channel     :save-channel})
+
+(deftest download
+  (cljs.test/async
+    done
+    (go
+      (let [ [tag response] (<! (channel fda-engine download-req))]
+        (is (= tag :succeed))
+        (is (= response {"downloaded" :original-bucket})))
+      (done))))
