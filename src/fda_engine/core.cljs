@@ -16,15 +16,15 @@
       (.readFileSync "static/config.edn" "UTF-8")
       read-string))
 
-(defmulti cast-async-spell (fn [{spell :spell} ctx] (keyword spell)))
+(defmulti download (fn [{spell :spell} ctx] (keyword spell)))
 
-(defmethod cast-async-spell :delay-channel
+(defmethod download :delay-channel
   [{:keys [msecs] :or {msecs 1000}} ctx]
   (go
     (<! (async/timeout msecs))
     {:waited msecs}))
 
-(defmethod cast-async-spell :delay-fail
+(defmethod download :delay-fail
   [{:keys [msecs] :or {msecs 1000}} ctx]
   (go
     (<! (async/timeout msecs))
@@ -37,7 +37,7 @@
            (when (not= (:original-bucket input) (config :original-bucket))
              (throw (js/Error. "Your magic word is garbage")))
            (->
-             (cast-async-spell input context)))
+             (download input context)))
 
 
 
