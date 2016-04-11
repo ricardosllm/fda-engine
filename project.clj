@@ -6,7 +6,7 @@
                  [org.clojure/clojurescript "1.7.228"]
                  [org.clojure/core.async "0.2.374"]
 
-                 [io.nervous/cljs-lambda "0.3.0-SNAPSHOT"]
+                 [io.nervous/lein-cljs-lambda "0.5.1"]
                  [io.nervous/cljs-nodejs-externs "0.2.0"]]
 
   :plugins [[lein-cljsbuild "1.1.3"]
