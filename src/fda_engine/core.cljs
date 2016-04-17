@@ -55,7 +55,6 @@
 
 ; finish function gets the done msg from the finish channel and calls context.done
 
-
 ; Channels:
   ; download
   ; save

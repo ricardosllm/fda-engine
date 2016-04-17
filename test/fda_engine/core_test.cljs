@@ -12,7 +12,7 @@
             (constantly nil)))
 
 (deftest wrong-word
-  (-> (invoke fda-engine {:original-bucket "not the magic word"})
+  (-> (invoke fda-engine {:original-bucket "fda-original"})
       with-some-error))
 
 (def delay-channel-req
