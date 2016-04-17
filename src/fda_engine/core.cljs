@@ -16,7 +16,7 @@
       (.readFileSync "static/config.edn" "UTF-8")
       read-string))
 
-(defmulti download (fn [{spell :spell} ctx] (keyword spell)))
+(defmulti download (fn [{bucket :bucket} ctx] (keyword bucket)))
 
 (defmethod download :delay-channel
   [{:keys [msecs] :or {msecs 1000}} ctx]
