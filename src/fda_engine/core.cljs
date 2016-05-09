@@ -1,43 +1,42 @@
 (ns fda-engine.core
-  (:require [cljs-lambda.util :as lambda]
-            [cljs-lambda.context :as ctx]
-            [cljs-lambda.macros :refer-macros [deflambda]]
+  (:require [cljs.nodejs :as nodejs]
+            ;[cljs-lambda.context :as ctx]
+            ;[cljs-lambda.macros :refer-macros [deflambda]]
+            ;[cljs-lambda.util :as lambda]
             [cljs.reader :refer [read-string]]
-            [cljs.nodejs :as nodejs]
-            [cljs.core.async :as async]
-            [promesa.core :as p])
+            [cljs.core.async :as async])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 ;; For optimizations :advanced
 (set! *main-cli-fn* identity)
 
-(def config
-  (-> (nodejs/require "fs")
-      (.readFileSync "static/config.edn" "UTF-8")
-      read-string))
-
-(defmulti download (fn [{bucket :bucket} ctx] (keyword bucket)))
-
-(defmethod download :delay-channel
-  [{:keys [msecs] :or {msecs 1000}} ctx]
-  (go
-    (<! (async/timeout msecs))
-    {:waited msecs}))
-
+;(def config
+;  (-> (nodejs/require "fs")
+;      (.readFileSync "static/config.edn" "UTF-8")
+;      read-string))
+;
+;(defmulti download (fn [{bucket :bucket} ctx] (keyword bucket)))
+;
+;(defmethod download :delay-channel
+;  [{:keys [msecs] :or {msecs 1000}} ctx]
+;  (go
+;    (<! (async/timeout msecs))
+;    {:waited msecs}))
+;
 (defmethod download :delay-fail
-  [{:keys [msecs] :or {msecs 1000}} ctx]
-  (go
-    (<! (async/timeout msecs))
-    ;; We can fail/succeed wherever w/ fail!/succeed! - we can also
-    ;; leave an Error instance on the channel we return, or return a reject
-    ;; promised - see :delayed-failure above.
-    (ctx/fail! ctx (js/Error. (str "Failing after " msecs " milliseconds")))))
-
-(deflambda fda-engine [{:keys [:original-bucket] :as input} context]
-           (when (not= (:original-bucket input) (config :original-bucket))
-             (throw (js/Error. "Your magic word is garbage")))
-           (->
-             (download input context)))
+ [{:keys [msecs] :or {msecs 1000}} ctx]
+ (go
+   (<! (async/timeout msecs))
+   ;; We can fail/succeed wherever w/ fail!/succeed! - we can also
+   ;; leave an Error instance on the channel we return, or return a reject
+   ;; promised - see :delayed-failure above.
+   (ctx/fail! ctx (js/Error. (str "Failing after " msecs " milliseconds")))))
+;
+;(deflambda fda-engine [{:keys [:original-bucket] :as input} context]
+;           (when (not= (:original-bucket input) (config :original-bucket))
+;             (throw (js/Error. "Your magic word is garbage")))
+;           (->
+;             (download input context)))
 
 
 ; entry function puts on download channel
