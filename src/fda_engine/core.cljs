@@ -10,11 +10,11 @@
 ;; For optimizations :advanced
 (set! *main-cli-fn* identity)
 
-;(def config
-;  (-> (nodejs/require "fs")
-;      (.readFileSync "static/config.edn" "UTF-8")
-;      read-string))
-;
+(def config
+ (-> (nodejs/require "fs")
+     (.readFileSync "static/config.edn" "UTF-8")
+     read-string))
+
 ;(defmulti download (fn [{bucket :bucket} ctx] (keyword bucket)))
 ;
 ;(defmethod download :delay-channel
