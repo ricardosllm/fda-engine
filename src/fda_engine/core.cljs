@@ -15,14 +15,6 @@
      (.readFileSync "static/config.edn" "UTF-8")
      read-string))
 
-;(defmulti download (fn [{bucket :bucket} ctx] (keyword bucket)))
-;
-;(defmethod download :delay-channel
-;  [{:keys [msecs] :or {msecs 1000}} ctx]
-;  (go
-;    (<! (async/timeout msecs))
-;    {:waited msecs}))
-;
 (defmethod download :delay-fail
  [{:keys [msecs] :or {msecs 1000}} ctx]
  (go
@@ -31,13 +23,6 @@
    ;; leave an Error instance on the channel we return, or return a reject
    ;; promised - see :delayed-failure above.
    (ctx/fail! ctx (js/Error. (str "Failing after " msecs " milliseconds")))))
-;
-;(deflambda fda-engine [{:keys [:original-bucket] :as input} context]
-;           (when (not= (:original-bucket input) (config :original-bucket))
-;             (throw (js/Error. "Your magic word is garbage")))
-;           (->
-;             (download input context)))
-
 
 ; entry function puts on download channel
 ; download function gets from download channel and download the image from S3
