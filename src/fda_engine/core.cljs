@@ -15,14 +15,14 @@
      (.readFileSync "static/config.edn" "UTF-8")
      read-string))
 
-(defmethod download :delay-fail
- [{:keys [msecs] :or {msecs 1000}} ctx]
- (go
-   (<! (async/timeout msecs))
-   ;; We can fail/succeed wherever w/ fail!/succeed! - we can also
-   ;; leave an Error instance on the channel we return, or return a reject
-   ;; promised - see :delayed-failure above.
-   (ctx/fail! ctx (js/Error. (str "Failing after " msecs " milliseconds")))))
+; (defmethod download :delay-fail
+;  [{:keys [msecs] :or {msecs 1000}} ctx]
+;  (go
+;    (<! (async/timeout msecs))
+;    ;; We can fail/succeed wherever w/ fail!/succeed! - we can also
+;    ;; leave an Error instance on the channel we return, or return a reject
+;    ;; promised - see :delayed-failure above.
+;    (ctx/fail! ctx (js/Error. (str "Failing after " msecs " milliseconds")))))
 
 ; entry function puts on download channel
 ; download function gets from download channel and download the image from S3
