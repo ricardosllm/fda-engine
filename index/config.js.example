@@ -1,0 +1,5 @@
+var config = {};
+
+config.s3Burl = "<https://s3-<region>.amazonaws.com/your-bucket-name/">";
+
+module.exports = config;
