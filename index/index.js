@@ -5,9 +5,9 @@ var async = require('async');
 var fs = require('fs');
 var COLOR = [0, 255, 0]; // default red
 var thickness = 2; // default 1
-var s3burl = "";
 var defaultCameraId = "face-detection";
-
+var config = require('./config');
+var s3burl = config.s3Burl;
 
 exports.handler = function(event, context) {
   var srcBucket = event.Records[0].s3.bucket.name;
