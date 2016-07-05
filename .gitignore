@@ -6,5 +6,5 @@ pom.xml
 /target/
 .lein*
 .idea/
-/node_modules/
+index/node_modules/
 /static/config.edn
