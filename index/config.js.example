@@ -1,5 +1,7 @@
 var config = {};
 
-config.s3Burl = "<https://s3-<region>.amazonaws.com/your-bucket-name/">";
+config.s3Burl = "<https://s3-<region>.amazonaws.com/your-bucket-name/";
+config.resourcesCounterDBName = "";
+config.snapshotDBName = "";
 
 module.exports = config;

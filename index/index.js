@@ -106,7 +106,7 @@ exports.handler = function(event, context) {
                     croppedurl: {S: s3burl+dstKey+'-'+crop.id+'.png'},
                     rawurl: {S: s3burl+srcKey}
                   },
-                  TableName: 'snapshot'
+                  TableName: config.snapshotDBName
                 };
                 db.putItem(params, function(err, data) {
                   if (err) console.log(err);
@@ -124,7 +124,7 @@ exports.handler = function(event, context) {
             console.log('Uploading raw count ');
 
             var params = {
-              "TableName": "resources-counter",
+              "TableName": config.resourcesCounterDBName,
               "Key": {
                 "id": {
                   "S": cameraid
