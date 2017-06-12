@@ -60,101 +60,94 @@ exports.handler = function(event, context) {
           var files = [];
           for (var i = 0; i < faces.length; i++) {
             face = faces[i];
-            //im.rectangle([face.x, face.y], [face.width, face.height], COLOR, 2);
             img_crop = im.crop(face.x-10, face.y-10,face.width+20, face.height+20);
             img_crop.save('/tmp/image-crop-'+i+'.png');
             files.push({'id':i,'file':'/tmp/image-crop-'+i+'.png'});
           }
-          //im.save('/tmp/image-crop.png');
           next(null,files);
         });
 
       });
     },
-          function upload(files,next) {
-            console.log('Uploading detected faces to S3');
-            var i = 0;
-            if(!files.length)
-              next(null);
-            else
-            {
-              files.forEach(function(crop) {
-                fs.readFile(crop.file, function (err, data) {
-                  if (err) console.log(err);
-                  s3.putObject({
-                    Bucket: dstBucket,
-                    Key: dstKey+'-'+crop.id+'.png',
-                    Body: data,
-                    ContentType: 'image/png',
-                    ACL: "public-read",
-                    Metadata: { cameraid:cameraid}
-                  },function() {
-                    i++;
-                    rscounter.itemcountcrop++;
-                    var fsstats = fs.statSync(crop.file);
-                    var fileSizeInBytes = fsstats["size"];
-                    rscounter.bytecountcrop += fileSizeInBytes;
-                    if (i>=files.length*2) next(null);
-                  });
-
-                });
-                var params = {
-                  Item: {
-                    id : {S: crypto.randomBytes(20).toString('hex')},
-                    unixtimestamp: {N: Math.floor(new Date() / 1000).toString()},
-                    cameraid: {S: cameraid},
-                    croppedurl: {S: s3burl+dstKey+'-'+crop.id+'.png'},
-                    rawurl: {S: s3burl+srcKey}
-                  },
-                  TableName: config.snapshotDBName
-                };
-                db.putItem(params, function(err, data) {
-                  if (err) console.log(err);
-                  i++;
-                  if (i>=files.length*2) next(null);
-                });
-
-
-              });
-
-            }
-
-          },
-          function updaterawcount(next){
-            console.log('Uploading raw count ');
-
-            var params = {
-              "TableName": config.resourcesCounterDBName,
-              "Key": {
-                "id": {
-                  "S": cameraid
-                }
-              },
-              "UpdateExpression": "ADD bytecountraw :val1, itemcountraw :val2, bytecountcrop :val3, itemcountcrop :val4, exectime :val5",
-
-              "ExpressionAttributeValues": {
-                ":val1": {"N": rscounter.bytecountraw},
-                ":val2": {"N": "" + rscounter.itemcountraw },
-                ":val3": {"N": "" + rscounter.bytecountcrop },
-                ":val4": {"N": "" + rscounter.itemcountcrop },
-                ":val5": {"N": "" + ((new Date()).getTime() - rscounter.execstarttime)}
-              },
-              "ReturnValues": "ALL_NEW"
-            };
-            db.updateItem(params, function(err, data) {
-              console.log('Uploading raw count completed');
-
-              if (err) console.log(err);
-              else console.log(data);
-
-              next(null);
-
+    function upload(files,next) {
+      console.log('Uploading detected faces to S3');
+      var i = 0;
+      if(!files.length)
+        next(null);
+      else
+      {
+        files.forEach(function(crop) {
+          fs.readFile(crop.file, function (err, data) {
+            if (err) console.log(err);
+            s3.putObject({
+              Bucket: dstBucket,
+              Key: dstKey+'-'+crop.id+'.png',
+              Body: data,
+              ContentType: 'image/png',
+              ACL: "public-read",
+              Metadata: { cameraid:cameraid}
+            },function() {
+              i++;
+              rscounter.itemcountcrop++;
+              var fsstats = fs.statSync(crop.file);
+              var fileSizeInBytes = fsstats["size"];
+              rscounter.bytecountcrop += fileSizeInBytes;
+              if (i>=files.length*2) next(null);
             });
 
-          }
-          ], function (err) {
+          });
+          var params = {
+            Item: {
+              id : {S: crypto.randomBytes(20).toString('hex')},
+              unixtimestamp: {N: Math.floor(new Date() / 1000).toString()},
+              cameraid: {S: cameraid},
+              croppedurl: {S: s3burl+dstKey+'-'+crop.id+'.png'},
+              rawurl: {S: s3burl+srcKey}
+            },
+            TableName: config.snapshotDBName
+          };
+          db.putItem(params, function(err, data) {
             if (err) console.log(err);
-            context.done();
+            i++;
+            if (i>=files.length*2) next(null);
+          });
+        });
+      }
+    },
+    function updaterawcount(next){
+      console.log('Uploading raw count ');
+
+      var params = {
+        "TableName": config.resourcesCounterDBName,
+        "Key": {
+          "id": {
+            "S": cameraid
           }
+        },
+        "UpdateExpression": "ADD bytecountraw :val1, itemcountraw :val2, bytecountcrop :val3, itemcountcrop :val4, exectime :val5",
+
+        "ExpressionAttributeValues": {
+          ":val1": {"N": rscounter.bytecountraw},
+          ":val2": {"N": "" + rscounter.itemcountraw },
+          ":val3": {"N": "" + rscounter.bytecountcrop },
+          ":val4": {"N": "" + rscounter.itemcountcrop },
+          ":val5": {"N": "" + ((new Date()).getTime() - rscounter.execstarttime)}
+        },
+        "ReturnValues": "ALL_NEW"
+      };
+      db.updateItem(params, function(err, data) {
+        console.log('Uploading raw count completed');
+
+        if (err) console.log(err);
+        else console.log(data);
+
+        next(null);
+      });
+
+    }
+  ], function (err) {
+    if (err) console.log(err);
+    context.done();
+  }
                  );
 };
